@@ -1,4 +1,6 @@
-
+declare function local:enrich($xmlIn){
+  local:enrich($xmlIn, 1)
+};
 
 declare function local:enrich($xmlIn, $positionIn){
    let $entity := $entities/entity[$positionIn]
@@ -38,4 +40,4 @@ let $xml :=
   </xml>
 
 return 
- local:enrich($xml, 1)
+ local:enrich($xml)
