@@ -9,7 +9,7 @@ declare function local:enrich($xmlIn, $positionIn){
     element {$entity/@markup} {$cts:text})
    let $positionNew := $positionIn + 1
    return 
-     if ($positionNew le fn:count($entities))
+     if ($positionNew le fn:count($entities/entity))
      then 
        local:enrich($xmlNew, $positionNew)
      else $xmlNew
@@ -19,6 +19,7 @@ declare variable $entities :=
 <entities>
   <entity markup="company">MarkLogic</entity>
   <entity markup="company">MongoDB</entity>
+  <entity markup="person">Tyler</entity>
 </entities>;
 
 
@@ -28,6 +29,7 @@ let $xml :=
   <p>MarkLogic Server is an enterprise-class
   database specifically built for content.</p>
   <p>MongoDB is a cross-platform document-oriented database system.</p>
+  <p>Tyler Replogle is a Marklogic devloper</p>
   </xml>
 
 return 
