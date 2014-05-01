@@ -1,5 +1,7 @@
-declare function local:enrich($xmlIn, $entities, $positionIn){
-   let $entity := $entities[$positionIn]
+
+
+declare function local:enrich($xmlIn, $positionIn){
+   let $entity := $entities/entity[$positionIn]
    let $xmlNew :=
    cts:highlight(
     $xmlIn, 
@@ -9,15 +11,17 @@ declare function local:enrich($xmlIn, $entities, $positionIn){
    return 
      if ($positionNew le fn:count($entities))
      then 
-       local:enrich($xmlNew, $entities, $positionNew)
+       local:enrich($xmlNew, $positionNew)
      else $xmlNew
 };
 
-let $entities :=
+declare variable $entities :=
 <entities>
   <entity markup="company">MarkLogic</entity>
   <entity markup="company">MongoDB</entity>
-</entities>
+</entities>;
+
+
 
 let $xml :=  
   <xml>
@@ -27,5 +31,5 @@ let $xml :=
   </xml>
 
 return 
- local:enrich($xml, $entities/entity, 1)
+ local:enrich($xml, 1)
 
