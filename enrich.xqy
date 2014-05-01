@@ -44,7 +44,7 @@ declare variable $entities :=
      <term>mongodb</term>
    </terms>
   </entity>
-   <entity type="company" id="3" name="Tyler Replogle">
+   <entity type="person" id="3" name="Tyler Replogle">
    <terms>
      <term>tyler</term>
      <term>tyler replogle</term>
