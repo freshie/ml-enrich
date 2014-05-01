@@ -3,10 +3,11 @@
 declare function local:enrich($xmlIn, $positionIn){
    let $entity := $entities/entity[$positionIn]
    let $xmlNew :=
-   cts:highlight(
-    $xmlIn, 
-    $entity, 
-    element {$entity/@markup} {$cts:text})
+     cts:highlight(
+      $xmlIn, 
+      cts:word-query($entity, $queryOptions),
+      element {$entity/@markup} {$cts:text}
+     )
    let $positionNew := $positionIn + 1
    return 
      if ($positionNew le fn:count($entities/entity))
@@ -19,10 +20,10 @@ declare variable $entities :=
 <entities>
   <entity markup="company">MarkLogic</entity>
   <entity markup="company">MongoDB</entity>
-  <entity markup="person">Tyler</entity>
+  <entity markup="person">tyler replogle</entity>
 </entities>;
 
-
+declare variable $queryOptions := ("case-insensitive");
 
 let $xml :=  
   <xml>
