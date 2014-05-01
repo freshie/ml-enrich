@@ -8,7 +8,11 @@ declare function local:enrich($xmlIn, $positionIn){
      cts:highlight(
       $xmlIn, 
       cts:word-query($entity, $queryOptions),
-      element {$entity/@markup || "-entity"} {$cts:text}
+      element {$entity/@markup || "-entity"} 
+      {
+        attribute entityId {$entity/@id},
+        $cts:text
+       }
      )
    let $positionNew := $positionIn + 1
    return 
@@ -20,11 +24,11 @@ declare function local:enrich($xmlIn, $positionIn){
 
 declare variable $entities :=
 <entities>
-  <entity markup="company">MarkLogic</entity>
-  <entity markup="company">MongoDB</entity>
-  <entity markup="person">tyler replogle</entity>
-  <entity markup="object">Car</entity>
-  <entity markup="action">ran</entity>
+  <entity markup="company" id="1">MarkLogic</entity>
+  <entity markup="company" id="2">MongoDB</entity>
+  <entity markup="person" id="3">tyler replogle</entity>
+  <entity markup="object" id="4">Car</entity>
+  <entity markup="action" id="5">ran</entity>
 </entities>;
 
 declare variable $queryOptions := ("case-insensitive", "punctuation-insensitive", "whitespace-insensitive", "stemmed", "lang=eng");
@@ -41,3 +45,4 @@ let $xml :=
 
 return 
  local:enrich($xml)
+
