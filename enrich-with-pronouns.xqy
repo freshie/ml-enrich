@@ -5,15 +5,10 @@ declare function local:enrich($xmlIn as element()){
   return $pronounEnrich
 };
 
-declare function local:pronounEnrich($xmlIn as element()){
-  let $entiyId := fn:distinct-values($xmlIn//entity/@entityIds/fn:tokenize(., ','))
-  let $persons := $entities/entity[@type eq 'person' and @id eq $entiyId]
+declare function local:pronounEnrichPersons($xmlIn as element(), $person as element()){
   let $query := 
-     cts:or-query((
-        for $person in $persons
-        return
-        	cts:near-query(
-  				(
+          cts:near-query(
+          (
             cts:and-query((
               cts:or-query((
                 for $pronoun in $personalPronouns/thirdPersonSingular/pronoun
@@ -23,28 +18,28 @@ declare function local:pronounEnrich($xmlIn as element()){
               return 
               cts:word-query($term, $queryOptions)
            ))
-  				),
-  				10)
-      ))
+          ),
+          10)
   return     
   cts:highlight(
       $xmlIn, 
       $query,
       if (fn:lower-case($cts:text) eq $personalPronouns//pronoun/xs:string(.))
       then 
-        element {"entity"} 
+        element {"entity"}
         {
-         let $entitiesThatMatch :=
-            for $query  in $cts:queries
-            let $term := cts:word-query-text($query)
-            return $entities/entity[terms/term/xs:string(.) eq $term]
-          return 
-          attribute entityIds {fn:string-join($entitiesThatMatch/@id,",")},
+          attribute entityIds {fn:string-join($person/@id,",")},
           attribute debugQuery {$cts:queries}, 
           $cts:text
          }
        else ($cts:text)
      )
+};
+
+declare function local:pronounEnrich($xmlIn as element()){
+  let $entiyId := fn:distinct-values($xmlIn//entity/@entityIds/fn:tokenize(., ','))
+  let $persons := $entities/entity[@type eq 'person' and @id eq $entiyId]
+  return fn:fold-left(local:pronounEnrichPersons(?, ?), $xmlIn, $persons)
 };
 
 declare function local:entityEnrich($xmlIn as element()){
