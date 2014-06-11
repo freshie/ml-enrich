@@ -29,7 +29,7 @@ declare function local:pronounEnrichPersons($xmlIn as element(), $person as elem
         element {"entity"}
         {
           attribute entityIds {fn:string-join($person/@id,",")},
-          attribute debugQuery {$cts:queries}, 
+          (: attribute debugQuery {$cts:queries}, :)
           $cts:text
          }
        else ($cts:text)
@@ -125,11 +125,7 @@ declare variable $entities :=
      <term>mongodb</term>
    </terms>
   </entity>
-  <entity type="person" id="6" name="Tyler">
-   <terms>
-     <term>tyler replogle</term>
-   </terms>
-  </entity>
+
    <entity type="person" id="3" name="Tyler Replogle">
    <terms>
      <term>tyler replogle</term>
