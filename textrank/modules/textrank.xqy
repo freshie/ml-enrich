@@ -6,7 +6,7 @@ import module namespace rf = "https://github.com/freshie/ml-enrich/related" at "
 
 declare namespace mle = "https://github.com/freshie/ml-enrich";
 
-declare variable $dir as xs:string := "/enrich/";
+declare variable $dir as xs:string := "/enrich/configuration/";
 declare variable $dir-query as cts:query := cts:directory-query($dir, 'infinity');
 
 declare function tr:result-to-json($data) {
@@ -532,7 +532,7 @@ declare function tr:mark-items($node as node()*, $lang as xs:string, $items as e
                 $node,
                 cts:word-query($term, $word-query-options),
                 if ( fn:empty($cts:node/ancestor-or-self::span) ) then (
-                    <span class="ml-enrich-{$item/@type}-{$item/@index}">{$cts:text}</span>
+                    <enitity type="{$item/@type}">{$cts:text}</enitity>
                 ) else ( $cts:text )
             )
         return (
