@@ -2,13 +2,13 @@ xquery version "1.0-ml";
 
 module namespace rf = "https://github.com/freshie/ml-enrich/related";
 
-import module namespace util = "https://github.com/freshie/ml-enrich/utility" at "/modules/utility.xqy";
+declare namespace mle = "https://github.com/freshie/ml-enrich";
 
-declare namespace info = "http://lds.org/code/lds-edit/warehouse/document-info";
-declare namespace ldse = "http://lds.org/code/lds-edit";
 declare option xdmp:mapping "true";
 
-declare function rf:related-articles($locale as xs:string, $terms, $phrases, $concepts) {
+declare variable $dir as xs:string := "/enrich/content/";
+
+declare function rf:related($locale as xs:string, $terms, $phrases, $concepts) {
     <related>{
         let $term-map := map:map()
         let $_ :=
@@ -24,17 +24,15 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
         let $related :=
             cts:search(fn:collection()/*,
                 cts:and-query((
-                    cts:directory-query('/warehouse/sites/', 'infinity'),
-                    cts:element-attribute-range-query(xs:QName('ldse:document'), xs:QName('title'), '!=', "", "collation=http://marklogic.com/collation/"),
-                    cts:element-attribute-range-query(xs:QName('ldse:document'), xs:QName('locale'), '=', $locale, "collation=http://marklogic.com/collation/"),
-                    cts:element-query(xs:QName('ldse:publish-date'), cts:and-query(())),
+                    cts:directory-query($dir, 'infinity'),
+                    cts:element-attribute-value-query(xs:QName('text'), xs:QName('xml:lang'), $locale, "exact"),
                     cts:or-query((
                         for $term in $terms/*
                         let $score := $term/@score
                         let $weight := ($score div $max-term-score ) * 3
                         return (
                             cts:document-fragment-query(
-                                cts:element-word-query(xs:QName('ldse:term'), $term, (), $weight)
+                                cts:element-word-query(xs:QName('mle:term'), $term, (), $weight)
                             )
                         ),
                         for $phrase in $phrases/*
@@ -42,7 +40,7 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
                         let $weight := $score div $max-phrases-score * 4
                         return (
                             cts:document-fragment-query(
-                                cts:element-word-query(xs:QName('ldse:phrase'), $phrase, (), $weight)
+                                cts:element-word-query(xs:QName('mle:phrase'), $phrase, (), $weight)
                             )
                         ),
                         let $max := fn:max($concepts/@score)
@@ -51,7 +49,7 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
                         let $weight := $score div $max-concepts-score * 2
                         return (
                             cts:document-fragment-query(
-                                cts:element-attribute-word-query(xs:QName('ldse:concept'), xs:QName('label'), $concept/@label, (), $weight)
+                                cts:element-attribute-word-query(xs:QName('mle:concept'), xs:QName('label'), $concept/@label, (), $weight)
                             )
                         )
                     ))
@@ -63,7 +61,7 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
             for $doc in $related
             let $a-map := map:map()
             let $_ :=
-                for $term in $doc//ldse:term
+                for $term in $doc//mle:term
                 return (
                     map:put($a-map, $term,xs:double($term/@score))
                 )
@@ -76,14 +74,14 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
                     return (
                         $a-score div $max-phrases-score * 3
                     ),
-                    let $a-phrases := $doc//ldse:phrase
+                    let $a-phrases := $doc//mle:phrase
                     for $phrase in $phrases/phrase
                     let $a-score := $a-phrases[ . = $phrase ]/@score
                     where fn:exists($a-score)
                     return (
                         $a-score div $max-phrases-score * 4
                     ),
-                    let $a-concepts := $doc//ldse:concept
+                    let $a-concepts := $doc//mle:concept
                     for $concept in $concepts/concepy
                     let $a-score := $a-concepts[ @label = $concept/@label ]/@score
                     where fn:exists($a-score)
@@ -92,27 +90,11 @@ declare function rf:related-articles($locale as xs:string, $terms, $phrases, $co
                     )
 
                 ))
-            let $db-path as xs:string := xdmp:node-uri($doc)
-            let $info as element(info:document-info)? := xdmp:document-get-properties($db-path, xs:QName('info:document-info'))
-            let $url := rf:get-link($info)
-            let $title := $doc/ldse:ldse-meta/ldse:document/@title
-            where fn:exists($url) and fn:not( $url = "")
+            let $uri as xs:string := xdmp:node-uri($doc)
             order by $score descending
-            return (
-                <match url="{$url}" score="{$score}" title="{$title}"/>
-            )
-        return (
+            return 
+                <match uri="{$uri}" score="{$score}"/>
+        return
             $ordered[1 to 15]
-        )
     }</related>
 };
-
-declare function rf:get-link($info as element(info:document-info)) {
-    let $live-domain as xs:string := $info/info:live-domain
-    let $url as xs:string := $info/info:url
-    let $parts as element(url-parts) := util:get-url-parts($url)
-    let $protocol as xs:string := if ($parts/protocol != "") then (   $parts/protocol ) else ( 'https://')
-    return (
-        fn:concat($protocol, $live-domain, $parts/uri, $parts/params, $parts/hash)
-    )
-  };

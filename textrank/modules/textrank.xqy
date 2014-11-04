@@ -168,8 +168,8 @@ declare function tr:enrich( $data as element() ) {
         ) else ()
 
     let $related :=
-        if ($related-articles and 1 = 2) then (
-            rf:related-articles($lang, $terms, $phrases, $concepts)
+        if ($related-articles) then (
+            rf:related($lang, $terms, $phrases, $concepts)
         ) else ()
     return (
         <mle:enrich>
