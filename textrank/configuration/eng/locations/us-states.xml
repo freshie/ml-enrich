@@ -1,0 +1,152 @@
+<locations>
+  <location key="alabama" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Alabama</name>
+  </location>
+  <location key="alaska" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Alaska</name>
+  </location>
+  <location key="arizona" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Arizona</name>
+  </location>
+  <location key="arkansas" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Arkansas</name>
+  </location>
+  <location key="california" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>California</name>
+  </location>
+  <location key="colorado" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Colorado</name>
+  </location>
+  <location key="connecticut" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Connecticut</name>
+  </location>
+  <location key="delaware" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Delaware</name>
+  </location>
+  <location key="florida" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Florida</name>
+  </location>
+  <location key="georgia" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Georgia</name>
+  </location>
+  <location key="hawaii" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Hawaii</name>
+  </location>
+  <location key="idaho" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Idaho</name>
+  </location>
+  <location key="illinois" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Illinois</name>
+  </location>
+  <location key="indiana" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Indiana</name>
+  </location>
+  <location key="iowa" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Iowa</name>
+  </location>
+  <location key="kansas" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Kansas</name>
+  </location>
+  <location key="kentucky" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Kentucky</name>
+  </location>
+  <location key="louisiana" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Louisiana</name>
+  </location>
+  <location key="maine" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Maine</name>
+  </location>
+  <location key="maryland" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Maryland</name>
+  </location>
+  <location key="massachusetts" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Massachusetts</name>
+  </location>
+  <location key="michigan" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Michigan</name>
+  </location>
+  <location key="minnesota" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Minnesota</name>
+  </location>
+  <location key="mississippi" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Mississippi</name>
+  </location>
+  <location key="missouri" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Missouri</name>
+  </location>
+  <location key="montana" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Montana</name>
+  </location>
+  <location key="nebraska" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Nebraska</name>
+  </location>
+  <location key="nevada" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Nevada</name>
+  </location>
+  <location key="new-hampshire" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>New Hampshire</name>
+  </location>
+  <location key="new-jersey" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>New Jersey</name>
+  </location>
+  <location key="new-mexico" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>New Mexico</name>
+  </location>
+  <location key="new-york" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>New York</name>
+  </location>
+  <location key="north-carolina" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>North Carolina</name>
+  </location>
+  <location key="north-dakota" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>North Dakota</name>
+  </location>
+  <location key="ohio" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Ohio</name>
+  </location>
+  <location key="oklahoma" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Oklahoma</name>
+  </location>
+  <location key="oregon" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Oregon</name>
+  </location>
+  <location key="pennsylvania" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Pennsylvania</name>
+  </location>
+  <location key="rhode-island" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Rhode Island</name>
+  </location>
+  <location key="south-carolina" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>South Carolina</name>
+  </location>
+  <location key="south-dakota" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>South Dakota</name>
+  </location>
+  <location key="tennessee" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Tennessee</name>
+  </location>
+  <location key="texas" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Texas</name>
+  </location>
+  <location key="utah" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Utah</name>
+  </location>
+  <location key="vermont" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Vermont</name>
+  </location>
+  <location key="virginia" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Virginia</name>
+  </location>
+  <location key="washington" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Washington</name>
+  </location>
+  <location key="west-virginia" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>West Virginia</name>
+  </location>
+  <location key="wisconsin" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Wisconsin</name>
+  </location>
+  <location key="wyoming" xml:lang="eng" itemType="http://www.schema.org/Place">
+    <name>Wyoming</name>
+  </location>
+</locations>

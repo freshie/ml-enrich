@@ -1,0 +1,23 @@
+<roles>
+  <role key="senate" xml:lang="eng">
+    <name>Senate</name>
+  </role>
+  <role key="house-of-representatives" xml:lang="eng">
+    <name>House of Representatives</name>
+  </role>
+  <role key="president" xml:lang="eng">
+    <name>President</name>
+  </role>
+  <role key="vice-president" xml:lang="eng">
+    <name>Vice President</name>
+  </role>
+  <role key="the-cabinet" xml:lang="eng">
+    <name>The Cabinet</name>
+  </role>
+  <role key="supreme-court" xml:lang="eng">
+    <name>Supreme Court</name>
+  </role>
+  <role key="other-federal-courts" xml:lang="eng">
+    <name>Other Federal Courts</name>
+  </role>
+</roles>

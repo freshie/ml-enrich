@@ -24,7 +24,7 @@ declare function tr:enrich( $data as element() ) {
        }
 
     let $text := <taggedDocument xml:lang="{$lang}">{$xml}</taggedDocument>
-    (: ' :)
+
     let $words := tr:normalize-words( $text, $remove-stop, $remove-noise, $lang )
     let $word-map := tr:textrank( tr:text-to-vertices( $words ), $iterations)
     let $terms := tr:find-best-terms( $word-map, $threshold  )
@@ -164,7 +164,7 @@ declare function tr:build-word-query( $words, $lang ) {
 
 declare function tr:markup-locations( $text, $lang, $map) {
     let $locations :=
-         cts:search(/location/name, $dir-query)
+         cts:search(/locations/location/name, $dir-query)
        
     let $query := cts:or-query( $locations )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="location">{
@@ -180,7 +180,7 @@ declare function tr:markup-locations( $text, $lang, $map) {
 
 declare function tr:markup-roles( $text, $lang, $map) {
     let $roles :=
-        cts:search(/role/name, $dir-query)
+        cts:search(/roles/role/name, $dir-query)
     let $query := cts:or-query( $roles )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="role">{
          for $query  in $cts:queries
@@ -195,13 +195,8 @@ declare function tr:markup-roles( $text, $lang, $map) {
 
 declare function tr:markup-organizations( $text, $lang, $map ) {
     let $organizations as xs:string* :=
-        cts:search(/organization/name, $dir-query)
-        (:cts:values(
-            cts:path-reference("/organization/name", "collation=http://marklogic.com/collation/"),
-            (),
-            (),
-            cts:directory-query('/enrich/', 'infinity')
-        ) :)
+        cts:search(/organizations/organization/name, $dir-query)
+       
     let $query := cts:or-query( $organizations )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="org">{
          for $query  in $cts:queries
@@ -216,7 +211,7 @@ declare function tr:markup-organizations( $text, $lang, $map ) {
 
 declare function tr:markup-people( $text, $lang, $map ) {
     let $people :=
-        cts:search(/person/name, $dir-query)
+        cts:search(/people/person/name, $dir-query)
     let $query := cts:or-query( $people )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="person">{
          for $query  in $cts:queries
@@ -266,7 +261,7 @@ declare function tr:text-to-vertices( $words ) {
 };
 
 declare function tr:remove-noise-words( $words, $lang as xs:string) {
-    let $uri := $dir || $lang || "-noise-words.xml"
+    let $uri := $dir || $lang || "/noise-words.xml"
     let $map-xml as element(map:map)? := fn:doc($uri)//map:map
     let $map as map:map := if (fn:exists($map-xml)) then ( map:map( $map-xml ) ) else ( map:map() )
     for $word in $words
@@ -331,18 +326,6 @@ declare function tr:textrank( $map, $iteration as xs:integer ) {
         )
 };
 
-declare function tr:format-as-uri( $s as xs:string ) as xs:string {
-    let $s := fn:replace( $s, "&amp;", "-" )
-    let $s := xdmp:diacritic-less( $s )
-    let $s := fn:lower-case( $s )
-    let $s := fn:replace( $s, "[^0-9a-z\- ]", "" )
-    let $s := fn:normalize-space( $s )
-    let $s := fn:replace( $s, " ", "-" )
-    let $s := fn:replace( $s, "[-]+", "-" )
-    return $s
-};
-
-
 declare function tr:mark-text($text, $lang, $terms, $phrases, $entities, $concepts) as element(taggedDocument) {
     let $options := (fn:concat( "lang=", $lang ), "case-insensitive", "punctuation-sensitive" )
     let $keyword-index-map := map:map()
@@ -355,30 +338,34 @@ declare function tr:mark-text($text, $lang, $terms, $phrases, $entities, $concep
         for $item as element() in
             (
 
-                for $item as element() at $index in $entities/organization-entity
+                for $item as element() at $index in $entities/mle:organization-entity
                 let $term as xs:string := $item
                 return <item length="{fn:string-length($term)}" type="organization" index="{$index}">{ $term }</item>,
-                for $item as element() at $index in $entities/person-entity
+                for $item as element() at $index in $entities/mle:person-entity
                 let $term as xs:string := $item
                 return <item length="{fn:string-length($term)}" type="person" index="{$index}">{ $term }</item>,
-                for $item as element() at $index in $entities/role-entity
+                for $item as element() at $index in $entities/mle:role-entity
                 let $term as xs:string := $item
                 return  <item length="{fn:string-length($term)}" type="role" index="{$index}">{ $term }</item>,
-                for $item as element() at $index in $entities/location-entity
+                for $item as element() at $index in $entities/mle:location-entity
                 let $term as xs:string := $item
                 return <item length="{fn:string-length($term)}" type="location" index="{$index}">{ $term }</item>
             )
         order by xs:int($item/@length) descending
         return $item,
-        for $item as element() at $index in $terms/term
+        for $item as element() at $index in $terms/mle:term
         let $term as xs:string :=  $item
         let $length := fn:string-length($term)
         order by xs:int($length) descending
         return <item length="{$length}" type="keyword" index="{$index}">{ $term }</item>
     )
 
-    let $marked-text := tr:mark-items($text, $lang, $items)
-
+    let $marked-text := 
+        fn:fold-left(
+           function($result, $item) {  tr:mark-items($result, $item, $lang) },
+           $text,
+           $items
+        )
     return $marked-text
 };
 
@@ -390,21 +377,16 @@ declare variable $word-query-options as xs:string* := (
     "unwildcarded"
 );
 
-declare function tr:mark-items($node as node()*, $lang as xs:string, $items as element()*) {
-    if ( fn:exists( $items ) ) then (
-        let $item as element() := $items[1]
-        let $word-query-options := ( $word-query-options , fn:concat( 'lang=', $lang ) )
-        let $term as xs:string := $item
-        let $marked-node :=
-            cts:highlight(
-                $node,
-                cts:word-query($term, $word-query-options),
-                if ( fn:empty($cts:node/ancestor-or-self::span) ) then (
-                    <enitity type="{$item/@type}">{$cts:text}</enitity>
-                ) else ( $cts:text )
-            )
-        return (
-            tr:mark-items($marked-node, $lang, fn:subsequence($items, 2))
+declare function tr:mark-items($node as node()*, $item as element(), $lang as xs:string) {
+    let $word-query-options := ( $word-query-options , 'lang=' || $lang  )
+    let $term as xs:string := $item
+    let $marked-node :=
+        cts:highlight(
+            $node,
+            cts:word-query($term, $word-query-options),
+            if ( fn:empty($cts:node/ancestor-or-self::enitity) ) then (
+                <enitity type="{$item/@type}">{$cts:text}</enitity>
+            ) else ( $cts:text )
         )
-    ) else ( $node  )
+    return $marked-node
 };
