@@ -9,137 +9,6 @@ declare namespace mle = "https://github.com/freshie/ml-enrich";
 declare variable $dir as xs:string := "/enrich/configuration/";
 declare variable $dir-query as cts:query := cts:directory-query($dir, 'infinity');
 
-declare function tr:result-to-json($data) {
-    let $enrich-object := json:object()
-    let $terms :=
-        let $terms-array := json:array()
-        let $put :=
-            for $term in $data/terms/term
-            let $term-obj := json:object()
-            let $keys := (
-                map:put($term-obj, 'score', xs:double($term/@score)),
-                map:put($term-obj, 'count', xs:int($term/@count)),
-                map:put($term-obj, 'value', xs:string($term))
-            )
-            return ( json:array-push($terms-array, $term-obj) )
-        return ( map:put($enrich-object, 'terms', $terms-array) )
-
-    let $phrases :=
-        let $phrases-array := json:array()
-        let $put :=
-            for $phrase in $data/phrases/phrase
-            let $phrase-obj := json:object()
-            let $keys := (
-                map:put($phrase-obj, 'score', xs:double($phrase/@score)),
-                map:put($phrase-obj, 'value', xs:string($phrase))
-            )
-            return ( json:array-push($phrases-array, $phrase-obj) )
-        return ( map:put($enrich-object, 'phrases', $phrases-array) )
-
-    let $entities :=
-        let $entities-obj := json:object()
-        let $orgs :=
-            let $orgs-array := json:array()
-            let $push :=
-                for $org in $data/entities/organization-entity
-                let $org-obj := json:object()
-                let $put := (
-                    map:put($org-obj, 'count', xs:int($org/@count)),
-                    map:put($org-obj, 'value', xs:string($org))
-                )
-                return ( json:array-push($orgs-array, $org-obj) )
-            return ( map:put($entities-obj, "organizations", $orgs-array) )
-        let $roles :=
-            let $roles-array := json:array()
-            let $push :=
-                for $role in $data/entities/role-entity
-                let $role-obj := json:object()
-                let $put := (
-                    map:put($role-obj, 'count', xs:int($role/@count)),
-                    map:put($role-obj, 'value', xs:string($role))
-                )
-                return ( json:array-push($roles-array, $role-obj) )
-            return ( map:put($entities-obj, "roles", $roles-array) )
-        let $locations :=
-            let $locations-array := json:array()
-            let $push :=
-                for $location in $data/entities/location-entity
-                let $location-obj := json:object()
-                let $put := (
-                    map:put($location-obj, 'count', xs:int($location/@count)),
-                    map:put($location-obj, 'value', xs:string($location))
-                )
-                return ( json:array-push($locations-array, $location-obj) )
-            return ( map:put($entities-obj, "locations", $locations-array) )
-        let $people :=
-            let $people-array := json:array()
-            let $push :=
-                for $person in $data/entities/person-entity
-                let $person-obj := json:object()
-                let $put := (
-                    map:put($person-obj, 'count', xs:int($person/@count)),
-                    map:put($person-obj, 'value', xs:string($person))
-                )
-                return ( json:array-push($people-array, $person-obj) )
-            return ( map:put($entities-obj, "people", $people-array) )
-        return ( map:put($enrich-object, 'entities', $entities-obj) )
-
-    let $concepts :=
-        let $concepts-array := json:array()
-        let $push :=
-            for $concept in $data/concepts/concept
-            let $concept-obj := json:object()
-            let $matches-array := json:array()
-            let $push :=
-                for $match in $concept/concept-match
-                let $match-obj := json:object()
-                let $put := (
-                    map:put($match-obj, 'score', xs:double($match/@score)),
-                    map:put($match-obj, 'value', xs:string($match))
-                )
-                return ( json:array-push($matches-array, $match-obj) )
-            let $puts := (
-                map:put($concept-obj, 'label', xs:string($concept/@label)),
-                map:put($concept-obj, 'score', xs:double($concept/@score)),
-                map:put($concept-obj, 'matches', $matches-array)
-            )
-            return ( json:array-push($concepts-array, $concept-obj) )
-        return ( map:put($enrich-object, 'concepts', $concepts-array) )
-    let $text :=
-        let $value := xdmp:quote($data/text/node())
-        return ( map:put($enrich-object, 'text', $value) )
-
-    let $related :=
-        let $related-array := json:array()
-        let $push :=
-            for $match in $data/related/match
-            let $match-obj := json:object()
-            let $puts := (
-                map:put($match-obj, "url", xs:string($match/@url)),
-                map:put($match-obj, "score", xs:double($match/@score)),
-                map:put($match-obj, "title", xs:string($match/@title))
-            )
-            return ( json:array-push($related-array, $match-obj))
-        return ( map:put($enrich-object, 'related', $related-array) )
-
-    return (
-        xdmp:to-json($enrich-object)
-    )
-};
-
-(:
-    <enrich>
-        <file> <some-xml-doc/> </file>
-        <iterations>50</iterations>
-        <threshold>0.05</threshold>
-        <remove-stop-words>true</remove-stop-words>
-        <remove-noise-words>true</remove-noise-words>
-        <related-articles>false</related-articles>
-        <id></id>
-        <lang></lang>
-        <return-text>true</return-text>
-    </enrich>
-:)
 declare function tr:enrich( $data as element() ) {
     let $return-text as xs:boolean := fn:not($data/mle:enrich/return-text = "false")
     let $iterations as xs:int := xs:int( ($data/mle:enrich/iterations, 50)[1] )
@@ -151,10 +20,10 @@ declare function tr:enrich( $data as element() ) {
     let $xml :=
         element {fn:node-name($data)} {
                 $data/@*,
-                $data/* except $data/mle:enrich
+                $data/* except ($data/mle:enrich,$data/mle:meta)
        }
 
-    let $text as element(text) := <text xml:lang="{$lang}">{fn:normalize-space( fn:replace( fn:string-join($xml//text(), ' '), '&amp;|&nbsp;|\}|\{', ' ') )}</text>
+    let $text := <taggedDocument xml:lang="{$lang}">{$xml}</taggedDocument>
     (: ' :)
     let $words := tr:normalize-words( $text, $remove-stop, $remove-noise, $lang )
     let $word-map := tr:textrank( tr:text-to-vertices( $words ), $iterations)
@@ -386,7 +255,7 @@ declare function tr:text-to-vertices( $words ) {
                 map:put($map, 'out', $out),
                 map:put($map, 'out-count', fn:count( $out )),
                 map:put($map, 'in', $in),
-                map:put($map, 'in-count', fn:count( $in )),
+                map:put($map, 'in-count', fn:count( $in ) + 1),
                 map:put($map, 'count', map:get($counts, $v) ),
                 map:put($map, 'score', $starting-score)
             )
@@ -437,10 +306,8 @@ declare function tr:textrank( $map, $iteration as xs:integer ) {
                             let $in-vertex := map:get( $map, $in-link )
                             let $in-pr := map:get($in-vertex, 'score')
                             let $in-link-out-count := map:get($in-vertex, 'in-count')
-                            let $in-link-out-count := if ( $in-link-out-count = 0 ) then 1 else $in-link-out-count
-                            return (
+                            return 
                                 $in-pr div $in-link-out-count
-                            )
                         )
                     )
                 ) else (
@@ -475,7 +342,7 @@ declare function tr:format-as-uri( $s as xs:string ) as xs:string {
 };
 
 
-declare function tr:mark-text($text, $lang, $terms, $phrases, $entities, $concepts) as element(text) {
+declare function tr:mark-text($text, $lang, $terms, $phrases, $entities, $concepts) as element(taggedDocument) {
     let $options := (fn:concat( "lang=", $lang ), "case-insensitive", "punctuation-sensitive" )
     let $keyword-index-map := map:map()
     let $organization-index-map := map:map()
