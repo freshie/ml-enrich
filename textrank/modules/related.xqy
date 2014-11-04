@@ -9,7 +9,7 @@ declare option xdmp:mapping "true";
 declare variable $dir as xs:string := "/enrich/content/";
 
 declare function rf:related($locale as xs:string, $terms, $phrases, $concepts) {
-    <related>{
+    <mle:related>{
         let $term-map := map:map()
         let $_ :=
             for $term in $terms/term
@@ -93,8 +93,8 @@ declare function rf:related($locale as xs:string, $terms, $phrases, $concepts) {
             let $uri as xs:string := xdmp:node-uri($doc)
             order by $score descending
             return 
-                <match uri="{$uri}" score="{$score}"/>
+                <mle:match uri="{$uri}" score="{$score}"/>
         return
             $ordered[1 to 15]
-    }</related>
+    }</mle:related>
 };

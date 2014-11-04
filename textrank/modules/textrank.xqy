@@ -50,6 +50,7 @@ declare function tr:enrich( $data as element() ) {
                 {$related}
             </mle:meta>
             {$marked-text}
+            <orignalDocument>{$data}</orignalDocument>
         </mle:enrich>
     )
 };
@@ -58,44 +59,44 @@ declare function tr:enrich( $data as element() ) {
 (: Get top keywords :)
 declare function tr:find-best-terms( $word-map, $threshold as xs:double ) {
     let $terms :=
-        <terms>{
+        <mle:terms>{
             for $word in map:keys( $word-map )
             let $inner-map := map:get( $word-map, $word )
             let $score := map:get($inner-map, 'score')
             let $count :=  map:get($inner-map, 'count')
             order by $score descending
-            return <term score="{ $score }" count="{ $count }">{ $word }</term>
-        }</terms>
+            return <mle:term score="{ $score }" count="{ $count }">{ $word }</mle:term>
+        }</mle:terms>
     let $total-terms := fn:count( $terms/term )
     let $max-terms := xs:int( fn:floor( $total-terms * $threshold ) )
     let $max-terms := if ( $max-terms < 15 ) then ( 15 ) else ( $max-terms )
-    let $terms := <terms>{ ($terms/term)[1 to $max-terms] }</terms>
+    let $terms := <mle:terms>{ ($terms/mle:term)[1 to $max-terms] }</mle:terms>
     return $terms
 };
 
 (: Get top phrases :)
 declare function tr:find-best-phrases( $text, $word-map, $lang, $threshold ) {
     let $phrases :=
-        <phrases>{
+        <mle:phrases>{
             let $marked-up-text := tr:markup-phrases( $text, $word-map, $lang )
             for $phrase in fn:distinct-values( $marked-up-text//phrase/fn:lower-case( . ) )
             let $words := tr:normalize-words($phrase, fn:false(), fn:false(), $lang)
             let $score := fn:sum( for $word in $words return ( map:get(map:get($word-map, $word), 'score') ) )
             where fn:contains( $phrase, " " )
             order by $score descending
-            return <phrase score="{$score}">{ $phrase }</phrase>
-        }</phrases>
+            return <mle:phrase score="{$score}">{ $phrase }</mle:phrase>
+        }</mle:phrases>
 
-    let $total-phrases := fn:count( $phrases/phrase )
+    let $total-phrases := fn:count( $phrases/mle:phrase )
     let $max-phrases := xs:int( fn:floor( $total-phrases * $threshold ) )
     let $max-phrases := if ( $max-phrases < 10 ) then ( 10 ) else ( $max-phrases )
-    let $phrases := <phrases>{ ($phrases/phrase)[1 to $max-phrases] }</phrases>
+    let $phrases := <mle:phrases>{ ($phrases/mle:phrase)[1 to $max-phrases] }</mle:phrases>
     return ( $phrases )
 };
 
 (: Get top concepts :)
 declare function tr:match-concepts( $word-map, $terms, $lang ) {
-  <concepts>{
+  <mle:concepts>{
         for $concept in cts:search(/concept, cts:reverse-query( $terms ) )
         let $concept-terms as xs:string* := $concept//cts:text
         let $matches :=
@@ -105,16 +106,16 @@ declare function tr:match-concepts( $word-map, $terms, $lang ) {
           where fn:exists($map)
           order by $score descending
           return (
-            <concept-match score="{$score}">{$term}</concept-match>
+            <mle:concept-match score="{$score}">{$term}</mle:concept-match>
           )
         let $match-count := fn:count( $matches )
         let $score := fn:sum($matches/@score)
         order by $score descending
         return
-            <concept label="{ $concept/label/text() }" score="{$score}" matches="{ $match-count }">
+            <mle:concept label="{ $concept/label/text() }" score="{$score}" matches="{ $match-count }">
                { $matches }
-            </concept>
-  }</concepts>
+            </mle:concept>
+  }</mle:concepts>
 };
 
 declare function tr:get-entities( $text, $lang ) {
@@ -125,18 +126,18 @@ declare function tr:get-entities( $text, $lang ) {
 
     let $organizations :=
         for $org in fn:distinct-values(tr:markup-organizations( $text, $lang, $org-map )//entity)
-        return <organization-entity count="{ map:get($org-map, $org) }">{$org}</organization-entity>
+        return <mle:organization-entity count="{ map:get($org-map, $org) }">{$org}</mle:organization-entity>
     let $people :=
         for $person in fn:distinct-values(tr:markup-people( $text, $lang, $people-map )//entity)
-        return <person-entity count="{ map:get($people-map, $person) }">{$person}</person-entity>
+        return <mle:person-entity count="{ map:get($people-map, $person) }">{$person}</mle:person-entity>
     let $roles :=
         for $role in fn:distinct-values(tr:markup-roles( $text, $lang, $role-map )//entity)
-        return <role-entity count="{ map:get($role-map, $role) }">{$role}</role-entity>
+        return <mle:role-entity count="{ map:get($role-map, $role) }">{$role}</mle:role-entity>
     let $locations :=
         for $location in fn:distinct-values(tr:markup-locations( $text, $lang, $location-map )//entity)
-        return <location-entity count="{ map:get($location-map, $location) }">{$location}</location-entity>
+        return <mle:location-entity count="{ map:get($location-map, $location) }">{$location}</mle:location-entity>
 
-    return <entities>{$organizations, $people, $roles, $locations}</entities>
+    return <mle:entities>{$organizations, $people, $roles, $locations}</mle:entities>
 };
 
 declare function tr:markup-phrases( $text, $word-map, $lang ) {
