@@ -1,6 +1,7 @@
 xquery version "1.0-ml";
 
-module namespace rf = "http://lds.org/code/enrich/related-functions";
+module namespace rf = "https://github.com/freshie/ml-enrich/related";
+
 import module namespace util = "https://github.com/freshie/ml-enrich/utility" at "/modules/utility.xqy";
 
 declare namespace info = "http://lds.org/code/lds-edit/warehouse/document-info";

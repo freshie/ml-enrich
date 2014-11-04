@@ -10,7 +10,7 @@ declare function util:renameSpace($xml as item()*, $ns as xs:string) as item()* 
 	for $n as item() in $xml
 	return
 	    typeswitch ($n)
-	    case element() return element {fn:QName($ns, fn:local-name($n))} { $n/@*, util:renamespace($n/node(), $ns)}
+	    case element() return element {fn:QName($ns, fn:local-name($n))} { $n/@*, util:renameSpace($n/node(), $ns)}
 	    default return ( $n )
 };
 

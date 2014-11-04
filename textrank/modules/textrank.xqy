@@ -2,8 +2,7 @@ xquery version "1.0-ml";
 
 module namespace tr = "https://github.com/freshie/ml-enrich/text-rank";
 
-import module namespace fmap = "http://lds.org/code/shared/field-map" at "/modules/field-maps.xqy";
-import module namespace rf = "http://lds.org/code/enrich/related-functions" at "/modules/related-functions.xqy";
+import module namespace rf = "https://github.com/freshie/ml-enrich/related" at "/modules/related.xqy";
 
 declare namespace mle = "https://github.com/freshie/ml-enrich";
 
@@ -141,14 +140,14 @@ declare function tr:result-to-json($data) {
         <return-text>true</return-text>
     </enrich>
 :)
-declare function tr:enrich( $data as element(enrich) ) {
-    let $return-text as xs:boolean := fn:not($data/return-text = "false")
-    let $iterations as xs:int := xs:int( ($data/iterations, 50)[1] )
-    let $threshold as xs:double := xs:double( ($data/threshold, 0.05)[1]  )
-    let $remove-stop as xs:boolean := fn:not($data/remove-stop-words = "false")
-    let $remove-noise as xs:boolean := fn:not($data/remove-noise-words = "false")
-    let $related-articles as xs:boolean := fn:not($data/related-articles = "false")
-    let $lang := "en"
+declare function tr:enrich( $data as element() ) {
+    let $return-text as xs:boolean := fn:not($data/mle:enrich/return-text = "false")
+    let $iterations as xs:int := xs:int( ($data/mle:enrich/iterations, 50)[1] )
+    let $threshold as xs:double := xs:double( ($data/mle:enrich/threshold, 0.05)[1]  )
+    let $remove-stop as xs:boolean := fn:not($data/mle:enrich/remove-stop-words = "false")
+    let $remove-noise as xs:boolean := fn:not($data/mle:enrich/remove-noise-words = "false")
+    let $related-articles as xs:boolean := fn:not($data/mle:enrich/related-articles = "false")
+    let $lang := "eng"
     let $xml :=
         element {fn:node-name($data)} {
                 $data/@*,
@@ -169,18 +168,20 @@ declare function tr:enrich( $data as element(enrich) ) {
         ) else ()
 
     let $related :=
-        if ($related-articles) then (
+        if ($related-articles and 1 = 2) then (
             rf:related-articles($lang, $terms, $phrases, $concepts)
         ) else ()
     return (
-        <enrich>
-            {$terms}
-            {$phrases}
-            {$entities}
-            {$concepts}
+        <mle:enrich>
+            <mle:meta>
+                {$terms}
+                {$phrases}
+                {$entities}
+                {$concepts}
+                {$related}
+            </mle:meta>
             {$marked-text}
-            {$related}
-        </enrich>
+        </mle:enrich>
     )
 };
 
@@ -293,12 +294,8 @@ declare function tr:build-word-query( $words, $lang ) {
 
 declare function tr:markup-locations( $text, $lang, $map) {
     let $locations :=
-        cts:values(
-            cts:path-reference("/location/name", "collation=http://marklogic.com/collation/codepoint"),
-            (),
-            (),
-            cts:directory-query('/enrich/', 'infinity')
-        )
+         cts:search(/location/name, $dir-query)
+       
     let $query := cts:or-query( $locations )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="location">{
         for $query  in $cts:queries
@@ -313,12 +310,7 @@ declare function tr:markup-locations( $text, $lang, $map) {
 
 declare function tr:markup-roles( $text, $lang, $map) {
     let $roles :=
-        cts:values(
-            cts:path-reference("/role/name", "collation=http://marklogic.com/collation/codepoint"),
-            (),
-            (),
-            cts:directory-query('/enrich/', 'infinity')
-        )
+        cts:search(/role/name, $dir-query)
     let $query := cts:or-query( $roles )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="role">{
          for $query  in $cts:queries
@@ -333,12 +325,13 @@ declare function tr:markup-roles( $text, $lang, $map) {
 
 declare function tr:markup-organizations( $text, $lang, $map ) {
     let $organizations as xs:string* :=
-        cts:values(
-            cts:path-reference("/organization/name", "collation=http://marklogic.com/collation/codepoint"),
+        cts:search(/organization/name, $dir-query)
+        (:cts:values(
+            cts:path-reference("/organization/name", "collation=http://marklogic.com/collation/"),
             (),
             (),
             cts:directory-query('/enrich/', 'infinity')
-        )
+        ) :)
     let $query := cts:or-query( $organizations )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="org">{
          for $query  in $cts:queries
@@ -353,12 +346,7 @@ declare function tr:markup-organizations( $text, $lang, $map ) {
 
 declare function tr:markup-people( $text, $lang, $map ) {
     let $people :=
-        cts:values(
-            cts:path-reference("/person/name", "collation=http://marklogic.com/collation/codepoint"),
-            (),
-            (),
-            cts:directory-query('/enrich/', 'infinity')
-        )
+        cts:search(/person/name, $dir-query)
     let $query := cts:or-query( $people )
     let $marked-up-text := cts:highlight( $text, $query, <entity type="person">{
          for $query  in $cts:queries
@@ -408,13 +396,13 @@ declare function tr:text-to-vertices( $words ) {
 };
 
 declare function tr:remove-noise-words( $words, $lang as xs:string) {
-    let $dict-url := fn:concat( "/enrich/content/meta/vocabularies/dictionaries/", $lang, "/noise-words.xml" )
-    let $map := fmap:get-map($dict-url)
+    let $uri := "/enrich/" || $lang || "-noise-words.xml"
+    let $map-xml as element(map:map)? := fn:doc($uri)//map:map
+    let $map as map:map := if (fn:exists($map-xml)) then ( map:map( $map-xml ) ) else ( map:map() )
     for $word in $words
     where fn:not( map:contains( $map, $word ) )
-    return (
+    return
         $word
-    )
 };
 
 declare function tr:normalize-words( $text, $remove-stop-words as xs:boolean, $remove-noise-words as xs:boolean, $lang ) {
