@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Missionary Work</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">mission</cts:text>
+      <cts:text xml:lang="en">missions</cts:text>
+      <cts:text xml:lang="en">missionary</cts:text>
+      <cts:text xml:lang="en">missionary work</cts:text>
+      <cts:text xml:lang="en">missionaries</cts:text>
+      <cts:text xml:lang="en">gospel</cts:text>
+      <cts:text xml:lang="en">elder</cts:text>
+      <cts:text xml:lang="en">sister</cts:text>
+      <cts:text xml:lang="en">teach</cts:text>
+      <cts:text xml:lang="en">testify</cts:text>
+      <cts:text xml:lang="en">investigator</cts:text>
+      <cts:text xml:lang="en">baptize</cts:text>
+      <cts:text xml:lang="en">baptizing</cts:text>
+      <cts:text xml:lang="en">serve</cts:text>
+      <cts:text xml:lang="en">convert</cts:text>
+      <cts:text xml:lang="en">conversion</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>

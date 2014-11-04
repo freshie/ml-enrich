@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organization key="brigham-young-university" xml:lang="eng" itemType="http://www.schema.org/Organization">
+    <name>Brigham Young University</name>
+    <desc>Brigham Young University (BYU) is a four-year private institution located in Provo, Utah,
+        owned and operated by The Church of Jesus Christ of Latter-day Saints as part of the Church
+        Educational System.</desc>
+    <url>http://www.byu.edu</url>
+</organization>

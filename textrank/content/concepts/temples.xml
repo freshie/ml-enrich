@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Temples</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">eternal</cts:text>
+      <cts:text xml:lang="en">celestial</cts:text>
+      <cts:text xml:lang="en">ordinances</cts:text>
+      <cts:text xml:lang="en">temple</cts:text>
+      <cts:text xml:lang="en">endow</cts:text>
+      <cts:text xml:lang="en">endowment</cts:text>
+      <cts:text xml:lang="en">sealing</cts:text>
+      <cts:text xml:lang="en">baptisms for the dead</cts:text>
+      <cts:text xml:lang="en">garments</cts:text>
+      <cts:text xml:lang="en">angle moroni</cts:text>
+      <cts:text xml:lang="en">sacred building</cts:text>
+      <cts:text xml:lang="en">holy</cts:text>
+      <cts:text xml:lang="en">house of the lord</cts:text>
+      <cts:text xml:lang="en">covenants</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>

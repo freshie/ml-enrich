@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Provident Living</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">welfare</cts:text>
+      <cts:text xml:lang="en">debt</cts:text>
+      <cts:text xml:lang="en">water</cts:text>
+      <cts:text xml:lang="en">employment</cts:text>
+      <cts:text xml:lang="en">thrift</cts:text>
+      <cts:text xml:lang="en">provident living</cts:text>
+      <cts:text xml:lang="en">unemployment</cts:text>
+      <cts:text xml:lang="en">skills</cts:text>
+      <cts:text xml:lang="en">job</cts:text>
+      <cts:text xml:lang="en">food</cts:text>
+      <cts:text xml:lang="en">necessities</cts:text>
+      <cts:text xml:lang="en">self-reliance</cts:text>
+      <cts:text xml:lang="en">family services</cts:text>
+      <cts:text xml:lang="en">food storage</cts:text>
+      <cts:text xml:lang="en">finances</cts:text>
+      <cts:text xml:lang="en">gardening</cts:text>
+      <cts:text xml:lang="en">emergency preparedness</cts:text>
+      <cts:text xml:lang="en">education</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>

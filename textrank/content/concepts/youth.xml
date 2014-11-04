@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Youth</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">for the strength of youth</cts:text>
+      <cts:text xml:lang="en">standards</cts:text>
+      <cts:text xml:lang="en">young men</cts:text>
+      <cts:text xml:lang="en">young man</cts:text>
+      <cts:text xml:lang="en">young women</cts:text>
+      <cts:text xml:lang="en">young woman</cts:text>
+      <cts:text xml:lang="en">personal progress</cts:text>
+      <cts:text xml:lang="en">duty to god</cts:text>
+      <cts:text xml:lang="en">aaronic priesthood</cts:text>
+      <cts:text xml:lang="en">scouting</cts:text>
+      <cts:text xml:lang="en">youth</cts:text>
+      <cts:text xml:lang="en">temptation</cts:text>
+      <cts:text xml:lang="en">worthiness</cts:text>
+      <cts:text xml:lang="en">chastity</cts:text>
+      <cts:text xml:lang="en">activities</cts:text>
+      <cts:text xml:lang="en">john the baptist</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Home and Family</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">daughter</cts:text>
+      <cts:text xml:lang="en">son</cts:text>
+      <cts:text xml:lang="en">mother</cts:text>
+      <cts:text xml:lang="en">father</cts:text>
+      <cts:text xml:lang="en">marriage</cts:text>
+      <cts:text xml:lang="en">family</cts:text>
+      <cts:text xml:lang="en">families</cts:text>
+      <cts:text xml:lang="en">home</cts:text>
+      <cts:text xml:lang="en">children</cts:text>
+      <cts:text xml:lang="en">love</cts:text>
+      <cts:text xml:lang="en">wife</cts:text>
+      <cts:text xml:lang="en">husband</cts:text>
+      <cts:text xml:lang="en">serve</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>

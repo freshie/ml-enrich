@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<concept>
+  <label>Family History</label>
+  <terms>
+      <cts:element-value-query xmlns:cts="http://marklogic.com/cts">
+      <cts:element>term</cts:element>
+      <cts:text xml:lang="en">familysearch</cts:text>
+      <cts:text xml:lang="en">genealogy</cts:text>
+      <cts:text xml:lang="en">family history</cts:text>
+      <cts:text xml:lang="en">pedigree</cts:text>
+      <cts:text xml:lang="en">scrapbook</cts:text>
+      <cts:text xml:lang="en">scrapbooking</cts:text>
+      <cts:text xml:lang="en">journal</cts:text>
+      <cts:text xml:lang="en">rootstech</cts:text>
+      <cts:text xml:lang="en">roots tech</cts:text>
+      <cts:text xml:lang="en">roots</cts:text>
+      <cts:text xml:lang="en">indexing</cts:text>
+      <cts:text xml:lang="en">census</cts:text>
+      <cts:text xml:lang="en">generation</cts:text>
+      <cts:text xml:lang="en">ancestors</cts:text>
+      <cts:text xml:lang="en">descendant</cts:text>
+      <cts:text xml:lang="en">memory</cts:text>
+      <cts:text xml:lang="en">memories</cts:text>
+      <cts:text xml:lang="en">record</cts:text>
+    </cts:element-value-query>
+  </terms>
+</concept>
