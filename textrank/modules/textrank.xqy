@@ -396,7 +396,7 @@ declare function tr:text-to-vertices( $words ) {
 };
 
 declare function tr:remove-noise-words( $words, $lang as xs:string) {
-    let $uri := "/enrich/" || $lang || "-noise-words.xml"
+    let $uri := $dir || $lang || "-noise-words.xml"
     let $map-xml as element(map:map)? := fn:doc($uri)//map:map
     let $map as map:map := if (fn:exists($map-xml)) then ( map:map( $map-xml ) ) else ( map:map() )
     for $word in $words
